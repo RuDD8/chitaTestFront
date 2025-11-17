@@ -102,15 +102,24 @@ function addMessage(text, type) {
 
 // Format bot messages for better readability
 function formatBotMessage(text) {
-    // Split by common emoji markers that indicate list items
-    let formatted = text
-        // Convert emoji bullets to proper line breaks
-        .replace(/([📍⭕🏢🏠💼📞📧🌐✅❌⚠️])/g, '<br>$1')
+    // First escape HTML to prevent XSS
+    const div = document.createElement('div');
+    div.textContent = text;
+    let escaped = div.innerHTML;
+    
+    // Now format with HTML
+    let formatted = escaped
+        // Add line breaks before location emoji (using unicode)
+        .replace(/(\uD83D\uDCCD)/g, '<br><span class="emoji">$1</span>')
+        // Add line breaks before circle emoji
+        .replace(/(\u26AB|\u2B55)/g, '<br><span class="emoji">$1</span>')
+        // Add line breaks before other common emojis
+        .replace(/(\uD83C\uDFE2|\uD83C\uDFE0|\uD83D\uDCBC|\uD83D\uDCDE|\uD83D\uDCE7|\uD83C\uDF10|\u2705|\u274C|\u26A0\uFE0F)/g, '<br><span class="emoji">$1</span>')
         // Handle multiple spaces
         .replace(/\s{2,}/g, ' ')
         // Clean up multiple consecutive line breaks
         .replace(/(<br>\s*){3,}/g, '<br><br>')
-        // Trim leading/trailing breaks
+        // Trim
         .trim();
     
     // Remove leading <br> if exists
@@ -118,13 +127,7 @@ function formatBotMessage(text) {
         formatted = formatted.substring(4);
     }
     
-    // Escape HTML but preserve our <br> tags
-    const div = document.createElement('div');
-    div.textContent = formatted;
-    let escaped = div.innerHTML;
-    escaped = escaped.replace(/&lt;br&gt;/g, '<br>');
-    
-    return escaped;
+    return formatted;
 }
 
 // Show loading indicator

@@ -195,6 +195,14 @@ body {
     max-width: 80%;
 }
 
+/* Emoji styling for better rendering */
+.message.bot .message-bubble .emoji {
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+    font-size: 1.1em;
+    margin-right: 8px;
+    display: inline-block;
+}
+
 /* Loading Animation */
 .loading-dots {
     display: flex;
